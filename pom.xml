@@ -13,11 +13,12 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
-    <surefire.version>2.12.2</surefire.version>
+    <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
+    <surefire.version>2.14.1</surefire.version>
     <selenium.version>2.44.0</selenium.version>
     <selenium.ffdriver.version>2.44.0</selenium.ffdriver.version>
     <selenium.chmdriver.version>2.44.0</selenium.chmdriver.version>
-    <testng.version>6.3</testng.version>
+    <testng.version>6.3.1</testng.version>
   </properties>
 
   <dependencies>
@@ -59,7 +60,10 @@
         <configuration>
           <!-- This is to skip tests during normal maven execution
           (e.g. mvn package) and run them in integration-test -->
-          <skip>true</skip>
+          <skip>false</skip>
+          <!--<suiteXmlFiles>-->
+            <!--<suiteXmlFile>testng.xml</suiteXmlFile>-->
+          <!--</suiteXmlFiles>-->
         </configuration>
         <executions>
           <execution>
@@ -73,6 +77,14 @@
           </execution>
         </executions>
       </plugin>
+      <!--<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${maven-failsafe-plugin.version}</version>
+        <configuration>
+          <groups>TestSetup</groups>
+        </configuration>
+      </plugin>-->
     </plugins>
   </build>
 </project>

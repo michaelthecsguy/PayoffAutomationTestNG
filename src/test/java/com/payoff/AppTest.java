@@ -3,10 +3,7 @@ package com.payoff;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -35,20 +32,20 @@ public class AppTest
 
   }
 
-  @BeforeTest
+  @BeforeTest @BeforeMethod
   public void setUpDriverFromSelenium() throws Exception
   {
     driver = new FirefoxDriver();
     driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
   }
 
-  @AfterTest
+  @AfterTest @AfterMethod
   public void closeSeleniumDriver() throws Exception
   {
     this.driver.quit();
   }
 
-  @Test(groups = {"TestSetup"})
+  @Test(groups = {"TestSetup"}) //Need to define the test group in testNG.xml, otherwise use -Dtest=AppTest#testSeleniumSetup+...
   public void testSeleniumSetup() throws Exception {
     this.driver.get(baseURLs.get("google"));
 
