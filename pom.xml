@@ -13,7 +13,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
-    <surefire.version>2.11</surefire.version>
+    <surefire.version>2.12.2</surefire.version>
     <selenium.version>2.44.0</selenium.version>
     <selenium.ffdriver.version>2.44.0</selenium.ffdriver.version>
     <selenium.chmdriver.version>2.44.0</selenium.chmdriver.version>

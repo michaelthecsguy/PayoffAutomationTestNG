@@ -1,6 +1,9 @@
 package com.payoff;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -33,30 +36,33 @@ public class AppTest
   }
 
   @BeforeTest
-  public void setUp() throws Exception
+  public void setUpDriverFromSelenium() throws Exception
   {
     driver = new FirefoxDriver();
     driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
   }
 
   @AfterTest
-  public void tearDown() throws Exception
+  public void closeSeleniumDriver() throws Exception
   {
     this.driver.quit();
   }
 
-  @Test
+  @Test(groups = {"TestSetup"})
   public void testSeleniumSetup() throws Exception {
     this.driver.get(baseURLs.get("google"));
-    assertEquals("Google", this.driver.getTitle());
+
+    //Opposite to JUnit assertEquals - actual, expected, custom failure msg
+    assertEquals(this.driver.getTitle(), "Google", "Cannot view a webpage and maybe network is down?!");
   }
 
-  @Test
+  @Test(groups = {"TestSetup"})
   public void testPayOffSiteUp() throws Exception
   {
     String siteName = "Payoff";
     this.driver.get(baseURLs.get("payoff"));
-    assert(this.driver.getTitle().contains(siteName));
+    assertTrue(this.driver.getTitle().contains(siteName),
+      "Cannot view the basepage of the application and maybe the application is down?!");
   }
 
   //one positive
@@ -90,9 +96,9 @@ public class AppTest
 
       applyNowButton = driver.findElement(By.id("btn-submit-po-screen-widget"));
 
-      assertEquals("$5,000", loanAmountInputElement.getAttribute("value"));
-      assertEquals("fair", creditScoreInputElement.getAttribute("value"));
-      assertEquals("I will feel FREEDOM.", whatWouldYouDoInputElement.getAttribute("value"));
+      assertEquals(loanAmountInputElement.getAttribute("value"), "$5,000");
+      assertEquals(creditScoreInputElement.getAttribute("value"), "fair");
+      assertEquals(whatWouldYouDoInputElement.getAttribute("value"), "I will feel FREEDOM.");
 
       applyNowButton.click();
 
@@ -101,64 +107,13 @@ public class AppTest
       waitForPrequalificationPage.until(ExpectedConditions.visibilityOfElementLocated(By.id("btn-submit")));
 
       //https://apply.payoff.com/b9d5c66d-3a1c-49d8-8b8c-b04cba6532c4/#/pre-qualification
-      assertEquals(this.driver.getTitle(), "Payoff - Pre Qualification");
-      assert(this.isElementPresent(By.id("eca")));
-      assert(this.isElementPresent(By.id("btn-submit")));
-      assert(driver.getCurrentUrl().contains("pre-qualification"));
+      assertEquals(this.driver.getTitle(), "Payoff - Pre Qualification", "Direct to the wrong page.");
+      assertTrue(this.isElementPresent(By.id("eca")), "UI widget- " + By.id("eca").toString() + " is missing.");
+      assertTrue(this.isElementPresent(By.id("btn-submit")), "UI widget- " + By.id("btn-submit").toString() + " is missing.");
+      assertTrue(driver.getCurrentUrl().contains("pre-qualification"), "Direct to the wrong page or URL is changed.");
     }
     else
-      assert(false);
-
-  }
-
-  //one positive: Input with invalid data
-  @Test
-  public void testPayOffScreenWithInvalidData()
-  {
-    WebDriverWait poScreenWait = new WebDriverWait(this.driver, 3);
-    this.driver.get(baseURLs.get("payoff"));
-    poScreenWait.until(ExpectedConditions.visibilityOfElementLocated(By.id("po-screen-widget")));
-
-    WebElement loanAmountInputElement;
-    WebElement creditScoreInputElement;
-    Select creditSelectDropDown;
-    WebElement whatWouldYouDoInputElement;
-    WebElement applyNowButton;
-
-    if (isElementPresent(By.id("po-screen-widget")) && isElementPresent(By.id("btn-submit-po-screen-widget")))
-    {
-      loanAmountInputElement = driver.findElement(By.id("loan_amount-po-screen-widget"));
-      loanAmountInputElement.sendKeys("");
-
-      creditScoreInputElement = driver.findElement(By.id("credit_score_bracket-po-screen-widget"));
-      creditSelectDropDown = new Select(creditScoreInputElement);
-      creditSelectDropDown.selectByValue("not_sure");
-
-      whatWouldYouDoInputElement = driver.findElement(By.id("introspection-po-screen-widget"));
-      whatWouldYouDoInputElement.sendKeys("I will feel FREEDOM.");
-
-      applyNowButton = driver.findElement(By.id("btn-submit-po-screen-widget"));
-
-      assertEquals("not_sure", creditScoreInputElement.getAttribute("value"));
-      assertEquals("I will feel FREEDOM.", whatWouldYouDoInputElement.getAttribute("value"));
-
-      //System.out.println(loanAmountInputElement.getAttribute("value"));
-      if (loanAmountInputElement.getAttribute("value").equals(""))
-      {
-        if (this.isElementPresent(By.cssSelector("div.text-danger")))
-        {
-            String actualErrorMsg = driver.findElement(By.cssSelector("div.text-danger")).getText();
-            assertEquals("Please enter a value between $5,000 to $25,000", actualErrorMsg);
-            assert(!applyNowButton.isEnabled());
-        }
-        else
-            assert(false);
-      }
-      else
-        assert(false);
-    }
-    else
-      assert(false);
+      assertTrue(false, "Missing UI Widget at the basepage and unable to proceed the test");
 
   }
 
@@ -191,12 +146,13 @@ public class AppTest
       applyNowButton = driver.findElement(By.id("btn-submit-po-screen-widget"));
 
       applyNowButton.click();
-      assert(this.isElementPresent(By.cssSelector("div.text-danger")));
-      System.out.println(this.driver.getTitle());
-      assert(this.driver.getTitle().contains("Refinancing Credit Card Debt"));
+      assertTrue(this.isElementPresent(By.cssSelector("div.text-danger")), "The UI widget is missing for Error msg.");
+      //System.out.println(this.driver.getTitle());
+      assertTrue(this.driver.getTitle().contains("Refinancing Credit Card Debt"),
+        "Direct to the wrong page after clicking Apply Now.  Should stay the samge page");
     }
     else
-      assert(false);
+      assertTrue(false, "Missing UI Widget at the basepage and unable to proceed the test.");
 
   }
 
