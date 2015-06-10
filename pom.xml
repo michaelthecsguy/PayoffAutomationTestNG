@@ -19,6 +19,7 @@
     <selenium.ffdriver.version>2.44.0</selenium.ffdriver.version>
     <selenium.chmdriver.version>2.44.0</selenium.chmdriver.version>
     <testng.version>6.3.1</testng.version>
+    <testng.xml.file>testng.xml</testng.xml.file>
   </properties>
 
   <dependencies>
@@ -61,9 +62,10 @@
           <!-- This is to skip tests during normal maven execution
           (e.g. mvn package) and run them in integration-test -->
           <skip>false</skip>
-          <!--<suiteXmlFiles>-->
-            <!--<suiteXmlFile>testng.xml</suiteXmlFile>-->
-          <!--</suiteXmlFiles>-->
+          <suiteXmlFiles>
+            <suiteXmlFile>${testng.xml.file}</suiteXmlFile>
+          </suiteXmlFiles>
+          <groups>TestSetup</groups>
         </configuration>
         <executions>
           <execution>

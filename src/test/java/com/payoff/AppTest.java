@@ -32,20 +32,23 @@ public class AppTest
 
   }
 
-  @BeforeTest @BeforeMethod
+  @BeforeMethod(alwaysRun=true)
+  //equivalent to override jUnit setup(); do not add @BeforeTest in front of it otherwise it will have double instances
   public void setUpDriverFromSelenium() throws Exception
   {
     driver = new FirefoxDriver();
     driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
   }
 
-  @AfterTest @AfterMethod
+  @AfterMethod(alwaysRun=true)
+  //equivalent to override jUnit tearDown()
   public void closeSeleniumDriver() throws Exception
   {
     this.driver.quit();
   }
 
-  @Test(groups = {"TestSetup"}) //Need to define the test group in testNG.xml, otherwise use -Dtest=AppTest#testSeleniumSetup+...
+  @Test(groups = {"TestSetup"})
+  //Need to define the test group in testNG.xml, otherwise use -Dtest=AppTest#testSeleniumSetup+...
   public void testSeleniumSetup() throws Exception {
     this.driver.get(baseURLs.get("google"));
 
