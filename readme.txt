@@ -10,4 +10,9 @@ export PATH=$PATH:$M2_HOME/bin
 5. Go to PayoffAutomationTestNG folder via command line and type the following:
 > mvn clean install
 
+or
+
+>mvn clean test -Dgroups="TestSetup"
+Note: Dgroups is defined in pom.xml and testNG annotation @Test(groups)
+
 6. WebDriver will kick to execute few tests
